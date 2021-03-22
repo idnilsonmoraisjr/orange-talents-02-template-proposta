@@ -26,13 +26,18 @@ public class ProposalsController {
 	private final Logger logger = LoggerFactory.getLogger(ProposalsController.class);
 	
 	@Autowired
-	private ProposalRepository proposalRespository;
+	private ProposalRepository proposalRepository;
 	
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> createProposal(@RequestBody @Valid NewProposalRequest request) {
 		Proposal newProposal = request.toProposalEntity();
-		proposalRespository.save(newProposal);
+	
+		if(proposalRepository.existsByDocument(newProposal.getDocument())) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
+		
+		proposalRepository.save(newProposal);
 		logger.info("A new proposal has been successfully created for the document {} and salary {}",
 				newProposal.getDocument(), newProposal.getSalary());
 		

@@ -8,4 +8,6 @@ import com.desafio.proposta.proposal.model.Proposal;
 @Repository
 public interface ProposalRepository extends CrudRepository<Proposal, Long>{
 
+	boolean existsByDocument(String document);
+
 }

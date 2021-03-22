@@ -40,62 +40,79 @@ class ProposalsControllerTest {
 
 	@Autowired
 	MockMvc mockMvc;
-	
+
 	@Autowired
 	ObjectMapper mapper;
-	
+
 	@Mock
-	ProposalRepository proposalRepository;
-	
+	private ProposalRepository proposalRepository;
+
 	private NewProposalRequest proposalRequest;
-	
+
 	private AddressRequest addressRequest;
-	
+
 	private NewProposalRequest invalidProposalRequest;
-	
+
 	private AddressRequest invalidAddressRequest;
- 	
+
 	@BeforeEach
 	public void setUp() {
-		this.addressRequest = new AddressRequest("Street of tests", "1",
-				"Tests neighborhood", "Test City", "16310-970", "SP");
-		this.proposalRequest = new NewProposalRequest("106.493.570-27",
-				"test@email.com","User test", addressRequest, BigDecimal.TEN);
+		this.addressRequest = new AddressRequest("Street of tests", "1", "Tests neighborhood", "Test City", "16310-970",
+				"SP");
+		this.proposalRequest = new NewProposalRequest("106.493.570-27", "test@email.com", "User test", addressRequest,
+				BigDecimal.TEN);
 		this.invalidAddressRequest = new AddressRequest("", "", "", "", "", "");
 		this.invalidProposalRequest = new NewProposalRequest("", "", "", invalidAddressRequest, null);
 	}
-	
+
 	@Test
 	@DisplayName("Should create a proposal succesfully and return 201 ")
 	void shouldCreateAProposal_AndReturn201() throws JsonProcessingException, Exception {
-		 mockMvc.perform(post("/api/proposals")
+		mockMvc.perform(post("/api/proposals")
 				.contentType(APPLICATION_JSON)
 				.content(toJson(proposalRequest)))
-		.andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION, "http://localhost/api/proposals/1"));
-		 
-		 Optional<Proposal> proposal = Optional.of(proposalRequest.toProposalEntity());
-		 when(proposalRepository.findById(1L)).thenReturn(proposal);
-		 assertEquals("106.493.570-27", proposal.get().getDocument());
+		.andExpect(status()
+				.isCreated())
+		.andExpect(header()
+				.string(LOCATION, "http://localhost/api/proposals/1"));
+
+		Optional<Proposal> proposal = Optional.of(proposalRequest.toProposalEntity());
+		when(proposalRepository.findById(1L)).thenReturn(proposal);
+		assertEquals("106.493.570-27", proposal.get().getDocument());
 	}
 
 	@Test
 	@DisplayName("Should fail at create a proposal and return 400")
 	void shouldFailCreateProposal_WhenFieldsAreIncorrect() throws JsonProcessingException, Exception {
-		 mockMvc.perform(post("/api/proposals")
-					.contentType(APPLICATION_JSON)
-					.content(toJson(invalidProposalRequest)))
-			.andExpect(status().isBadRequest());
+		mockMvc.perform(post("/api/proposals")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(invalidProposalRequest)))
+				.andExpect(status().isBadRequest());
 
-		 	Optional<Proposal> proposal = Optional.empty();
-			assertThrows(NoSuchElementException.class, () ->{
-				when(proposalRepository.save(invalidProposalRequest.toProposalEntity()))
-				.thenReturn(proposal.get());
-			});
+		Optional<Proposal> proposal = Optional.empty();
+		assertThrows(NoSuchElementException.class, () -> {
+			when(proposalRepository.save(invalidProposalRequest.toProposalEntity())).thenReturn(proposal.get());
+		});
 	}
-	
+
+	@Test
+	@DisplayName("Should fail at create a proposal and return 422")
+	void shouldFailCreateProposal_WhenProposalAlreadyExistsByDocument() throws JsonProcessingException, Exception {
+
+		mockMvc.perform(post("/api/proposals")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(proposalRequest)))
+		.andExpect(status().isCreated());
+
+		mockMvc.perform(post("/api/proposals")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(proposalRequest)))
+				.andExpect(status().isUnprocessableEntity());
+	}
+
 	private String toJson(NewProposalRequest proposalRequest) throws JsonProcessingException {
 		return mapper.writeValueAsString(proposalRequest);
 	}
 
 }
+
