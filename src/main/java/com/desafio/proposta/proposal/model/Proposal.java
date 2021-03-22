@@ -1,0 +1,64 @@
+package com.desafio.proposta.proposal.model;
+
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+import com.desafio.proposta.utils.model.Address;
+
+@Entity
+public class Proposal {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@NotBlank
+	@Column(nullable = false)
+	private String document;
+	@NotBlank @Email
+	@Column(nullable = false)
+	private String email;
+	@NotBlank
+	@Column(nullable = false)
+	private String name;
+	@NotNull
+	@Embedded
+	private Address address;
+	@NotNull @Positive
+	@Column(nullable = false)
+	private BigDecimal salary;
+
+	@Deprecated
+	public Proposal() {}
+	
+	public Proposal(@NotBlank String document, @NotBlank @Email String email, @NotBlank String name,
+			@NotNull Address address, @NotNull @Positive BigDecimal salary) {
+				this.document = document;
+				this.email = email;
+				this.name = name;
+				this.address = address;
+				this.salary = salary;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getDocument() {
+		return document;
+	}
+
+	public BigDecimal getSalary() {
+		return salary;
+	}
+
+}
