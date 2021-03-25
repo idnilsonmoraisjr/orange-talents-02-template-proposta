@@ -1,7 +1,6 @@
 package com.desafio.proposta.proposal.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -10,11 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,9 +21,11 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.desafio.proposta.proposal.analysis.ProposalAnalysisClient;
 import com.desafio.proposta.proposal.model.Proposal;
 import com.desafio.proposta.proposal.repository.ProposalRepository;
 import com.desafio.proposta.proposal.request.NewProposalRequest;
@@ -46,6 +47,9 @@ class ProposalsControllerTest {
 
 	@Mock
 	private ProposalRepository proposalRepository;
+	
+	@Mock
+	private ProposalAnalysisClient proposalAnalysisClient;
 
 	private NewProposalRequest proposalRequest;
 
@@ -84,30 +88,33 @@ class ProposalsControllerTest {
 	@Test
 	@DisplayName("Should fail at create a proposal and return 400")
 	void shouldFailCreateProposal_WhenFieldsAreIncorrect() throws JsonProcessingException, Exception {
-		mockMvc.perform(post("/api/proposals")
+		 MockHttpServletResponse response = mockMvc.perform(post("/api/proposals")
 				.contentType(APPLICATION_JSON)
 				.content(toJson(invalidProposalRequest)))
-				.andExpect(status().isBadRequest());
-
-		Optional<Proposal> proposal = Optional.empty();
-		assertThrows(NoSuchElementException.class, () -> {
-			when(proposalRepository.save(invalidProposalRequest.toProposalEntity())).thenReturn(proposal.get());
-		});
+				.andExpect(status().isBadRequest())
+				.andReturn().getResponse();
+		 
+		Assertions.assertNull(response.getHeader(LOCATION));
 	}
 
 	@Test
 	@DisplayName("Should fail at create a proposal and return 422")
 	void shouldFailCreateProposal_WhenProposalAlreadyExistsByDocument() throws JsonProcessingException, Exception {
 
-		mockMvc.perform(post("/api/proposals")
+		MockHttpServletResponse responseCreated = mockMvc.perform(post("/api/proposals")
 				.contentType(APPLICATION_JSON)
 				.content(toJson(proposalRequest)))
-		.andExpect(status().isCreated());
+		.andExpect(status().isCreated())
+		.andReturn().getResponse();
 
-		mockMvc.perform(post("/api/proposals")
+		MockHttpServletResponse responseFail = mockMvc.perform(post("/api/proposals")
 				.contentType(APPLICATION_JSON)
 				.content(toJson(proposalRequest)))
-				.andExpect(status().isUnprocessableEntity());
+		.andExpect(status().isUnprocessableEntity())
+		.andReturn().getResponse();
+		
+		Assertions.assertNotNull(responseCreated.getHeader(LOCATION));
+		Assertions.assertNull(responseFail.getHeader(LOCATION));
 	}
 
 	private String toJson(NewProposalRequest proposalRequest) throws JsonProcessingException {

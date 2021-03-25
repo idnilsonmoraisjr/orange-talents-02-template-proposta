@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import com.desafio.proposta.proposal.enums.ProposalStatus;
 import com.desafio.proposta.utils.model.Address;
 
 @Entity
@@ -36,7 +39,10 @@ public class Proposal {
 	@NotNull @Positive
 	@Column(nullable = false)
 	private BigDecimal salary;
-
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	private ProposalStatus status = ProposalStatus.NOT_ELIGIBLE;
+	
 	@Deprecated
 	public Proposal() {}
 	
@@ -61,4 +67,15 @@ public class Proposal {
 		return salary;
 	}
 
+	public ProposalStatus getStatus() {
+		return status;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void updateStatus(ProposalStatus status) {
+		this.status = status;
+	}
 }
