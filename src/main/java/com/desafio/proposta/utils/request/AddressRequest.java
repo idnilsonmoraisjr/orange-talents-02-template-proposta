@@ -24,6 +24,9 @@ public class AddressRequest {
 	@Cep
 	private String zipCode;
 	
+	@Deprecated
+	public AddressRequest() {}
+	
 	public AddressRequest(@NotBlank String publicPlace, @NotBlank String number, @NotBlank String neighborhood,
 			@NotBlank String city, @NotBlank String zipCode, @NotBlank String federatedUnit) {
 		this.publicPlace = publicPlace;

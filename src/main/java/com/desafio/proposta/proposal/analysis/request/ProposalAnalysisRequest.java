@@ -21,10 +21,6 @@ public class ProposalAnalysisRequest {
 	@JsonProperty("idProposta")
 	private String proposalId;
 
-	public ProposalAnalysisRequest(@NotBlank String document, @NotBlank String name, @NotBlank String proposalId) {
-		
-	}
-
 	public ProposalAnalysisRequest(@Valid @NotNull Proposal newProposal) {
 		this.document = newProposal.getDocument();
 		this.name = newProposal.getName();

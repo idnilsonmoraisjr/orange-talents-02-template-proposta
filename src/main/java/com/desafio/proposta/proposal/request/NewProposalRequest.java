@@ -29,6 +29,9 @@ public class NewProposalRequest {
 	@Positive
 	private BigDecimal salary;
 	
+	@Deprecated
+	public NewProposalRequest() {};
+	
 	public NewProposalRequest(@NotBlank String document, @NotBlank @Email String email, @NotBlank String name,
 			@NotNull @Valid AddressRequest address, @NotNull @Positive BigDecimal salary) {
 		this.document = document;
