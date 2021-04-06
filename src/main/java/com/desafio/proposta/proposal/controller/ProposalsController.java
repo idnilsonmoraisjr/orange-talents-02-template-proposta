@@ -32,8 +32,8 @@ public class ProposalsController {
 	@Autowired
 	private ProposalRepository proposalRepository;
 	@Autowired
-	private ProposalAnalysisSubmitter analysisSubmitter;
-	
+	private ProposalAnalysisSubmitter proposalAnalysisSubmitter;
+
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> createProposal(@RequestBody @Valid NewProposalRequest request) {
@@ -44,7 +44,7 @@ public class ProposalsController {
 		}
 		
 		proposalRepository.save(newProposal);
-		ProposalStatus status = analysisSubmitter.submitForAnalysis(newProposal);
+		ProposalStatus status = proposalAnalysisSubmitter.submitForAnalysis(newProposal);
 		
 		newProposal.updateStatus(status);
 		logger.info("A new proposal has been successfully created for the document {} and salary {}",

@@ -23,7 +23,7 @@ public class ProposalAnalysisSubmitter {
 	
 	@Autowired
 	private ProposalAnalysisClient proposalAnalysisClient;
-		
+	
 	public ProposalStatus submitForAnalysis(Proposal newProposal) {
 		try {
 			ProposalAnalysisRequest analysisRequest = new ProposalAnalysisRequest(newProposal);

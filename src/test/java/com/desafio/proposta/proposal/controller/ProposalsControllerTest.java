@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.desafio.proposta.card.repository.CardRepository;
 import com.desafio.proposta.proposal.analysis.ProposalAnalysisClient;
 import com.desafio.proposta.proposal.analysis.ProposalAnalysisSubmitter;
 import com.desafio.proposta.proposal.enums.ProposalStatus;
@@ -44,6 +45,9 @@ class ProposalsControllerTest {
 	
 	@MockBean
 	private ProposalRepository proposalRepository;
+	
+	@MockBean
+	private CardRepository cardRepository;
 	
 	@MockBean
 	private ProposalAnalysisSubmitter analysisSubmitter;

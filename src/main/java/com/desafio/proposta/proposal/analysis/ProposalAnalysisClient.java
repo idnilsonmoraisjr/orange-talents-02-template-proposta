@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.desafio.proposta.proposal.analysis.request.ProposalAnalysisRequest;
 import com.desafio.proposta.proposal.analysis.response.ProposalAnalysisResponse;
 
-@FeignClient(name = "analysis", url = "${analysis.targetUrl}")
+@FeignClient(name = "proposal-analysis", url = "${proposal-analysis.targetUrl}")
 public interface ProposalAnalysisClient {
 
 	@PostMapping("/api/solicitacao")

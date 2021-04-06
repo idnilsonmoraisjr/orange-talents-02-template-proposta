@@ -42,6 +42,8 @@ public class Proposal {
 	@Enumerated(EnumType.STRING)
 	@NotNull
 	private ProposalStatus status = ProposalStatus.NOT_ELIGIBLE;
+	@Column(name = "card_number")
+	private String cardNumber;
 	
 	@Deprecated
 	public Proposal() {}
@@ -74,8 +76,16 @@ public class Proposal {
 	public String getName() {
 		return name;
 	}
+	
+	public String getCardNumber() {
+		return cardNumber;
+	}
 
 	public void updateStatus(ProposalStatus status) {
 		this.status = status;
+	}
+
+	public void associateCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
 	}
 }
