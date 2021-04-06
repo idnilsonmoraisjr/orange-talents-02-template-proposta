@@ -39,4 +39,27 @@ public class Address {
 				this.zipCode = zipCode;
 	}
 
+	public String getPublicPlace() {
+		return publicPlace;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public String getNeighborhood() {
+		return neighborhood;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getFederatedUnit() {
+		return federatedUnit;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
 }

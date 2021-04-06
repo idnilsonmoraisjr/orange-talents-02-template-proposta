@@ -12,13 +12,17 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,9 +33,13 @@ import com.desafio.proposta.proposal.enums.ProposalStatus;
 import com.desafio.proposta.proposal.model.Proposal;
 import com.desafio.proposta.proposal.repository.ProposalRepository;
 import com.desafio.proposta.proposal.request.NewProposalRequest;
+import com.desafio.proposta.proposal.response.ProposalResponse;
 import com.desafio.proposta.utils.request.AddressRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.restassured.http.ContentType;
+import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
 
 @WebMvcTest
 @ActiveProfiles("test")
@@ -207,6 +215,40 @@ class ProposalsControllerTest {
 		assertThrows(ResponseStatusException.class, () -> {
 			analysisSubmitter.submitForAnalysis(nullProposal);
 		});
+	}
+	
+	@Test
+	@DisplayName("Should successfully find a proposal by id and return 200 Ok")
+	void shouldSuccessfullyFindProposal_AndReturn200() {
+		Proposal proposal = proposalRequestCnpj.toProposalEntity();
+		
+		when(this.proposalRepository.findById(1L))
+			.thenReturn(Optional.of(proposal));
+		
+		 given()
+		 	.accept(ContentType.JSON)
+		.when()
+			.get("api/proposals/{id}", 1L)
+		.then()
+			.statusCode(HttpStatus.OK.value());
+		
+		 verify(proposalRepository, times(1)).findById(1L);
+	}
+	
+	@Test
+	@DisplayName("Should successfully find a proposal by id and return 404 Not Found")
+	void shouldFailFindProposal_AndReturn404() {
+ 		when(this.proposalRepository.findById(1L))
+			.thenReturn(Optional.empty());
+		
+		 given()
+		 	.accept(ContentType.JSON)
+		.when()
+			.get("api/proposals/{id}", 1L)
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+		
+		 verify(proposalRepository, times(1)).findById(1L);
 	}
 }
 

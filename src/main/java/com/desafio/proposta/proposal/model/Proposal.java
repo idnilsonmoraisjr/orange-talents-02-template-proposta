@@ -65,6 +65,14 @@ public class Proposal {
 		return document;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
 	public BigDecimal getSalary() {
 		return salary;
 	}

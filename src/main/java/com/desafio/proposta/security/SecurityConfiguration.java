@@ -1,4 +1,4 @@
-package com.desafio.proposta.security.actuator;
+package com.desafio.proposta.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

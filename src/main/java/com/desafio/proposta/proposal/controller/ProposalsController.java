@@ -3,6 +3,7 @@ package com.desafio.proposta.proposal.controller;
 import static com.desafio.proposta.utils.DocumentObfuscator.obfuscate;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,7 @@ import com.desafio.proposta.proposal.enums.ProposalStatus;
 import com.desafio.proposta.proposal.model.Proposal;
 import com.desafio.proposta.proposal.repository.ProposalRepository;
 import com.desafio.proposta.proposal.request.NewProposalRequest;
+import com.desafio.proposta.proposal.response.ProposalResponse;
 
 @RestController
 @RequestMapping("/api/proposals")
@@ -57,5 +61,16 @@ public class ProposalsController {
 				.toUri();
 		
 		return ResponseEntity.created(location).build();
+	}
+	
+	@GetMapping("/{id}")
+	@Transactional(readOnly = true)
+	public ResponseEntity<ProposalResponse> findProposalData(@PathVariable("id") Long id) {
+		
+		Optional<Proposal> optionalProposal = proposalRepository.findById(id);
+		
+		return optionalProposal.map(ProposalResponse::new)
+				.map(proposal -> ResponseEntity.ok(proposal))
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 }
