@@ -21,28 +21,22 @@ import com.desafio.proposta.proposal.model.Proposal;
 public class CardAnalysisSubmitter {
 
 	private final Logger logger = LoggerFactory.getLogger(CardAnalysisSubmitter.class);
-	
+
 	@Autowired
 	private CardRepository cardRepository;
-	
+
 	@Autowired
 	private CardAnalysisClient cardAnalysisClient;
-	
-	public void submit(Proposal proposal) {
-		
-		if(proposal.getCardNumber() != null) {
-			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "There is already a card associated with this proposal!");
-		}
+
+	public Card submit(Proposal proposal) {
 		try {
-		CardAnalysisRequest cardAnalysisRequest = new CardAnalysisRequest(proposal);
-		CardAnalysisResponse cardAnalysisResponse = cardAnalysisClient.submitForAnalysis(cardAnalysisRequest);
+			CardAnalysisRequest cardAnalysisRequest = new CardAnalysisRequest(proposal);
+			CardAnalysisResponse cardAnalysisResponse = cardAnalysisClient.submitForAnalysis(cardAnalysisRequest);
 
-		Card proposalCard = cardAnalysisResponse.toCardEntity();
-		cardRepository.save(proposalCard);
+			Card proposalCard = cardAnalysisResponse.toCardEntity();
+			cardRepository.save(proposalCard);
 
-		proposal.associateCardNumber(proposalCard.getCardNumber());
-		logger.info("A card has been successfully associated for the document proposal {} ",
-				obfuscate(proposal.getDocument()));
+			return proposalCard;
 		} catch (Exception e) {
 			logger.error("An error occurred while trying to associated a card for the document proposal {}",
 					obfuscate(proposal.getDocument()));

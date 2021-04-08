@@ -14,6 +14,13 @@ public class ProposalAnalysisResponse {
 	@JsonProperty("idProposta")
 	private String proposalId;
 
+	public ProposalAnalysisResponse(String document, String name, String analysisResult, String proposalId) {
+		this.document = document;
+		this.name = name;
+		this.analysisResult = analysisResult;
+		this.proposalId = proposalId;
+	}
+
 	public String getDocument() {
 		return document;
 	}

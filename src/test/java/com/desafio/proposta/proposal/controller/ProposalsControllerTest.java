@@ -14,7 +14,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,16 +31,15 @@ import com.desafio.proposta.proposal.enums.ProposalStatus;
 import com.desafio.proposta.proposal.model.Proposal;
 import com.desafio.proposta.proposal.repository.ProposalRepository;
 import com.desafio.proposta.proposal.request.NewProposalRequest;
-import com.desafio.proposta.proposal.response.ProposalResponse;
 import com.desafio.proposta.utils.request.AddressRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.http.ContentType;
-import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
 
 @WebMvcTest
 @ActiveProfiles("test")
+
 class ProposalsControllerTest {
 
 	@Autowired

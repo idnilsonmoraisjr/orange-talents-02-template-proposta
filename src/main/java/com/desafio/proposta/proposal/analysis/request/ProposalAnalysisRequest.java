@@ -36,6 +36,6 @@ public class ProposalAnalysisRequest {
 	}
 
 	public String getProposalId() {
-		return proposalId;
+		return this.proposalId;
 	}
 }

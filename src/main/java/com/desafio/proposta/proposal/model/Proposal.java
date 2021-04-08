@@ -96,4 +96,11 @@ public class Proposal {
 	public void associateCardNumber(String cardNumber) {
 		this.cardNumber = cardNumber;
 	}
+
+	public boolean haveACard() {
+		if(this.cardNumber == null) {
+			return false;
+		}
+		return true;
+	}
 }
